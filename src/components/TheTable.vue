@@ -32,84 +32,84 @@
             <span>Зернистость <SortIcon /></span>
           </th>
 
-          <th @click="sortDots(json, 'Abraforce')" class="abraforce">
+          <th @click="sort(json, 'Abraforce')" class="abraforce">
             <span>Abraforce <SortIcon /></span>
           </th>
-          <th @click="sortDots(json, 'P20')" class="abraforce">
+          <th @click="sort(json, 'P20')" class="abraforce">
             <span>P20 <SortIcon /></span>
           </th>
-          <th @click="sortDots(json, 'P24')" class="abraforce">
+          <th @click="sort(json, 'P24')" class="abraforce">
             <span>P24 <SortIcon /></span>
           </th>
-          <th @click="sortDots(json, 'P36')" class="abraforce">
+          <th @click="sort(json, 'P36')" class="abraforce">
             <span>P36 <SortIcon /></span>
           </th>
-          <th @click="sortDots(json, 'P40')" class="abraforce">
+          <th @click="sort(json, 'P40')" class="abraforce">
             <span>P40 <SortIcon /></span>
           </th>
-          <th @click="sortDots(json, 'P50')" class="abraforce">
+          <th @click="sort(json, 'P50')" class="abraforce">
             <span>P50 <SortIcon /></span>
           </th>
-          <th @click="sortDots(json, 'P60')" class="abraforce">
+          <th @click="sort(json, 'P60')" class="abraforce">
             <span>P60 <SortIcon /></span>
           </th>
-          <th @click="sortDots(json, 'P80')" class="abraforce">
+          <th @click="sort(json, 'P80')" class="abraforce">
             <span>P80 <SortIcon /></span>
           </th>
-          <th @click="sortDots(json, 'P100')" class="abraforce">
+          <th @click="sort(json, 'P100')" class="abraforce">
             <span>P100 <SortIcon /></span>
           </th>
 
-          <th @click="sortDots(json, 'P120')" class="abraforce">
+          <th @click="sort(json, 'P120')" class="abraforce">
             <span>P120 <SortIcon /></span>
           </th>
-          <th @click="sortDots(json, 'P150')" class="abraforce">
+          <th @click="sort(json, 'P150')" class="abraforce">
             <span>P150 <SortIcon /></span>
           </th>
-          <th @click="sortDots(json, 'P180')" class="abraforce">
+          <th @click="sort(json, 'P180')" class="abraforce">
             <span>P180 <SortIcon /></span>
           </th>
-          <th @click="sortDots(json, 'P220')" class="abraforce">
+          <th @click="sort(json, 'P220')" class="abraforce">
             <span>P220 <SortIcon /></span>
           </th>
-          <th @click="sortDots(json, 'P240')" class="abraforce">
+          <th @click="sort(json, 'P240')" class="abraforce">
             <span>P240 <SortIcon /></span>
           </th>
-          <th @click="sortDots(json, 'P280')" class="abraforce">
+          <th @click="sort(json, 'P280')" class="abraforce">
             <span>P280 <SortIcon /></span>
           </th>
-          <th @click="sortDots(json, 'P320')" class="abraforce">
+          <th @click="sort(json, 'P320')" class="abraforce">
             <span>P320 <SortIcon /></span>
           </th>
-          <th @click="sortDots(json, 'P360')" class="abraforce">
+          <th @click="sort(json, 'P360')" class="abraforce">
             <span>P360 <SortIcon /></span>
           </th>
-          <th @click="sortDots(json, 'P400')" class="abraforce">
+          <th @click="sort(json, 'P400')" class="abraforce">
             <span>P400 <SortIcon /></span>
           </th>
-          <th @click="sortDots(json, 'P500')" class="abraforce">
+          <th @click="sort(json, 'P500')" class="abraforce">
             <span>P500 <SortIcon /></span>
           </th>
-          <th @click="sortDots(json, 'P600')" class="abraforce">
+          <th @click="sort(json, 'P600')" class="abraforce">
             <span>P600 <SortIcon /></span>
           </th>
-          <th @click="sortDots(json, 'P800')" class="abraforce">
+          <th @click="sort(json, 'P800')" class="abraforce">
             <span>P800 <SortIcon /></span>
           </th>
 
-          <th @click="sortDots(json, 'P1000')" class="abraforce">
+          <th @click="sort(json, 'P1000')" class="abraforce">
             <span>P1000 <SortIcon /></span>
           </th>
-          <th @click="sortDots(json, 'P1200')" class="abraforce">
+          <th @click="sort(json, 'P1200')" class="abraforce">
             <span>P1200 <SortIcon /></span>
           </th>
-          <th @click="sortDots(json, 'P1500')" class="abraforce">
+          <th @click="sort(json, 'P1500')" class="abraforce">
             <span>P1500 <SortIcon /></span>
           </th>
-          <th @click="sortDots(json, 'P2000')" class="abraforce">
+          <th @click="sort(json, 'P2000')" class="abraforce">
             <span>P2000 <SortIcon /></span>
           </th>
-          <th @click="sortDots(json, 'P2500')" class="abraforce">
+          <th @click="sort(json, 'P2500')" class="abraforce">
             <span>P2500 <SortIcon /></span>
           </th>
         </tr>
@@ -180,21 +180,6 @@ const sheetToJson = async () => {
   json.value = utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
 
   console.log(json.value);
-
-  //raw_data[0]['Бренд'] = 'Новое название'
-
-  /* update data */
-  /* html.value = utils.sheet_to_html(utils.json_to_sheet(raw_data)); */
-
-  //console.log(raw_data);
-};
-
-const byFieldUp = (fieldName) => {
-  return (a, b) => (a[fieldName] > b[fieldName] ? 1 : -1);
-};
-
-const byFieldDown = (fieldName) => {
-  return (a, b) => (a[fieldName] < b[fieldName] ? 1 : -1);
 };
 
 const sort = (arr, field) => {
@@ -206,43 +191,41 @@ const sort = (arr, field) => {
 };
 
 const sortUp = (arr, field) => {
-  arr.sort(byFieldUp(field));
+  arr.sort((a, b) => {
+    if (a[field]?.toString().toLowerCase() > b[field]?.toString().toLowerCase()) {
+      return 1;
+    } else if (a[field]?.toString().toLowerCase() < b[field]?.toString().toLowerCase()) {
+      return -1;
+    } else if (a[field]?.toString().toLowerCase() == b[field]?.toString().toLowerCase()) {
+      return 0;
+    } else if (!a[field] && b[field]) {
+      return -1;
+    } else if (a[field] && !b[field]) {
+      return 1;
+    }
+  });
 
   clearSorting();
   event.currentTarget.classList.add("--sort-up");
 };
 
 const sortDown = (arr, field) => {
-  arr.sort(byFieldDown(field));
+  arr.sort((a, b) => {
+    if (b[field]?.toString().toLowerCase() > a[field]?.toString().toLowerCase()) {
+      return 1;
+    } else if (b[field]?.toString().toLowerCase() < a[field]?.toString().toLowerCase()) {
+      return -1;
+    } else if (a[field]?.toString().toLowerCase() == b[field]?.toString().toLowerCase()) {
+      return 0;
+    } else if (!a[field] && b[field]) {
+      return 1;
+    } else if (a[field] && !b[field]) {
+      return -1;
+    }
+  });
 
   clearSorting();
   event.currentTarget.classList.add("--sort-down");
-};
-
-const sortDots = (arr, field) => {
-  if (event.currentTarget.classList.contains("--sort-up")) {
-    function comparator(a, b) {
-      if (!a[field]) return -1;
-      const num_a = +a[field]?.replace(/\s+/g, "");
-      const num_b = +b[field]?.replace(/\s+/g, "");
-      return num_b - num_a;
-    }
-    arr.sort(comparator);
-    clearSorting();
-    event.currentTarget.classList.add("--sort-down");
-    console.log("сортировка по убываюнию!");
-  } else {
-    function comparator(a, b) {
-      if (!b[field]) return -1;
-      const num_a = +a[field]?.replace(/\s+/g, "");
-      const num_b = +b[field]?.replace(/\s+/g, "");
-      return num_b - num_a;
-    }
-    arr.sort(comparator);
-    clearSorting();
-    event.currentTarget.classList.add("--sort-up");
-    console.log("сортировка по возрастанию!");
-  }
 };
 
 const clearSorting = () => {
