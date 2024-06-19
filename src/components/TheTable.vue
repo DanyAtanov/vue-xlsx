@@ -126,35 +126,87 @@
           <td>{{ row["Особенности"] }}</td>
           <td>{{ row["Тип зерна"] }}</td>
           <td>{{ row["Зернистость"] }}</td>
-          <td>{{ row["Abraforce"] }}</td>
+          <td ref="abraforceValue" :data-row="row['Abraforce']">
+            {{ row["Abraforce"] }}
+          </td>
 
-          <td>{{ row["P20"] }}</td>
-          <td>{{ row["P24"] }}</td>
-          <td>{{ row["P36"] }}</td>
-          <td>{{ row["P40"] }}</td>
-          <td>{{ row["P50"] }}</td>
-          <td>{{ row["P60"] }}</td>
-          <td>{{ row["P80"] }}</td>
-          <td>{{ row["P100"] }}</td>
+          <td ref="abraforceValue" :data-row="row['Abraforce']">
+            {{ row["P20"] }}
+          </td>
+          <td ref="abraforceValue" :data-row="row['Abraforce']">
+            {{ row["P24"] }}
+          </td>
+          <td ref="abraforceValue" :data-row="row['Abraforce']">
+            {{ row["P36"] }}
+          </td>
+          <td ref="abraforceValue" :data-row="row['Abraforce']">
+            {{ row["P40"] }}
+          </td>
+          <td ref="abraforceValue" :data-row="row['Abraforce']">
+            {{ row["P50"] }}
+          </td>
+          <td ref="abraforceValue" :data-row="row['Abraforce']">
+            {{ row["P60"] }}
+          </td>
+          <td ref="abraforceValue" :data-row="row['Abraforce']">
+            {{ row["P80"] }}
+          </td>
+          <td ref="abraforceValue" :data-row="row['Abraforce']">
+            {{ row["P100"] }}
+          </td>
 
-          <td>{{ row["P120"] }}</td>
-          <td>{{ row["P150"] }}</td>
-          <td>{{ row["P180"] }}</td>
-          <td>{{ row["P220"] }}</td>
-          <td>{{ row["P240"] }}</td>
-          <td>{{ row["P280"] }}</td>
-          <td>{{ row["P320"] }}</td>
-          <td>{{ row["P360"] }}</td>
-          <td>{{ row["P400"] }}</td>
-          <td>{{ row["P500"] }}</td>
-          <td>{{ row["P600"] }}</td>
-          <td>{{ row["P800"] }}</td>
+          <td ref="abraforceValue" :data-row="row['Abraforce']">
+            {{ row["P120"] }}
+          </td>
+          <td ref="abraforceValue" :data-row="row['Abraforce']">
+            {{ row["P150"] }}
+          </td>
+          <td ref="abraforceValue" :data-row="row['Abraforce']">
+            {{ row["P180"] }}
+          </td>
+          <td ref="abraforceValue" :data-row="row['Abraforce']">
+            {{ row["P220"] }}
+          </td>
+          <td ref="abraforceValue" :data-row="row['Abraforce']">
+            {{ row["P240"] }}
+          </td>
+          <td ref="abraforceValue" :data-row="row['Abraforce']">
+            {{ row["P280"] }}
+          </td>
+          <td ref="abraforceValue" :data-row="row['Abraforce']">
+            {{ row["P320"] }}
+          </td>
+          <td ref="abraforceValue" :data-row="row['Abraforce']">
+            {{ row["P360"] }}
+          </td>
+          <td ref="abraforceValue" :data-row="row['Abraforce']">
+            {{ row["P400"] }}
+          </td>
+          <td ref="abraforceValue" :data-row="row['Abraforce']">
+            {{ row["P500"] }}
+          </td>
+          <td ref="abraforceValue" :data-row="row['Abraforce']">
+            {{ row["P600"] }}
+          </td>
+          <td ref="abraforceValue" :data-row="row['Abraforce']">
+            {{ row["P800"] }}
+          </td>
 
-          <td>{{ row["P1000"] }}</td>
-          <td>{{ row["P1200"] }}</td>
-          <td>{{ row["P1500"] }}</td>
-          <td>{{ row["P2000"] }}</td>
-          <td>{{ row["P2500"] }}</td>
+          <td ref="abraforceValue" :data-row="row['Abraforce']">
+            {{ row["P1000"] }}
+          </td>
+          <td ref="abraforceValue" :data-row="row['Abraforce']">
+            {{ row["P1200"] }}
+          </td>
+          <td ref="abraforceValue" :data-row="row['Abraforce']">
+            {{ row["P1500"] }}
+          </td>
+          <td ref="abraforceValue" :data-row="row['Abraforce']">
+            {{ row["P2000"] }}
+          </td>
+          <td ref="abraforceValue" :data-row="row['Abraforce']">
+            {{ row["P2500"] }}
+          </td>
         </tr>
       </tbody>
     </table>
@@ -162,24 +214,54 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { read, utils } from "xlsx";
 import SortIcon from "@/components/SortIcon.vue";
 
-const table = ref();
-const json = ref([]);
+let table = ref();
+let json = ref([]);
+let commentsList = ref([]);
+let abraforceValue = ref(null);
+let tableIsLoaded = ref(false);
+
+watch(abraforceValue, () => {
+  colorCells();
+});
 
 const sheetToJson = async () => {
   const f = await fetch("/src/assets/table.xlsx");
   const ab = await f.arrayBuffer();
 
   /* parse workbook */
-  const workbook = read(ab);
+  const workbook = read(ab, {
+    cellStyles: true,
+  });
 
-  /* JSON data */
   json.value = utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
 
+  //console.log(json.value[0]);
+  // Костыль для покраски ячеек
+  var ws = workbook.Sheets[workbook.SheetNames[0]];
+  if (!ws) return;
+  var ref = utils.decode_range(ws["!ref"]);
+  for (var R = 0; R <= ref.e.r; ++R)
+    for (var C = 0; C <= ref.e.c; ++C) {
+      var addr = utils.encode_cell({ r: R, c: C });
+      if (!ws[addr] || !ws[addr].c) continue;
+      var comments = ws[addr].c[0].h;
+      if (!comments.length) continue;
+
+      //console.log(comments.toLowerCase().includes("в разработке"));
+
+      console.log(ws[addr]);
+
+      commentsList.value.push({ row: ws[addr].v, inProgress: comments });
+    }
+
+  console.log(commentsList.value);
   console.log(json.value);
+
+  tableIsLoaded.value = true;
 };
 
 const sort = (arr, field) => {
@@ -188,15 +270,24 @@ const sort = (arr, field) => {
   } else {
     sortDown(arr, field);
   }
+  setTimeout(() => {
+    colorCells();
+  }, 0);
 };
 
 const sortUp = (arr, field) => {
   arr.sort((a, b) => {
-    if (a[field]?.toString().toLowerCase() > b[field]?.toString().toLowerCase()) {
+    if (
+      a[field]?.toString().toLowerCase() > b[field]?.toString().toLowerCase()
+    ) {
       return 1;
-    } else if (a[field]?.toString().toLowerCase() < b[field]?.toString().toLowerCase()) {
+    } else if (
+      a[field]?.toString().toLowerCase() < b[field]?.toString().toLowerCase()
+    ) {
       return -1;
-    } else if (a[field]?.toString().toLowerCase() == b[field]?.toString().toLowerCase()) {
+    } else if (
+      a[field]?.toString().toLowerCase() == b[field]?.toString().toLowerCase()
+    ) {
       return 0;
     } else if (!a[field] && b[field]) {
       return -1;
@@ -211,11 +302,17 @@ const sortUp = (arr, field) => {
 
 const sortDown = (arr, field) => {
   arr.sort((a, b) => {
-    if (b[field]?.toString().toLowerCase() > a[field]?.toString().toLowerCase()) {
+    if (
+      b[field]?.toString().toLowerCase() > a[field]?.toString().toLowerCase()
+    ) {
       return 1;
-    } else if (b[field]?.toString().toLowerCase() < a[field]?.toString().toLowerCase()) {
+    } else if (
+      b[field]?.toString().toLowerCase() < a[field]?.toString().toLowerCase()
+    ) {
       return -1;
-    } else if (a[field]?.toString().toLowerCase() == b[field]?.toString().toLowerCase()) {
+    } else if (
+      a[field]?.toString().toLowerCase() == b[field]?.toString().toLowerCase()
+    ) {
       return 0;
     } else if (!a[field] && b[field]) {
       return 1;
@@ -244,6 +341,26 @@ const prohibitToCopy = () => {
   }
 };
 
+// Костыль для окрашивания ячеек
+const colorCells = () => {
+  abraforceValue.value.forEach((cell, index) => {
+    cell.style.backgroundColor = "white";
+  });
+  
+  abraforceValue.value.forEach((cell, index) => {
+    if (cell.innerHTML.trim() !== "") {
+      cell.style.backgroundColor = "#D6DEF2";
+
+      for (let i = 0; i < commentsList.value.length; i++) {
+        if (cell.dataset.row === commentsList.value[i].row) {
+          cell.style.backgroundColor = "#F8E1D1";
+          cell.title = "В разработке";
+        }
+      }
+    }
+  });
+};
+
 onMounted(async () => {
   sheetToJson();
   prohibitToCopy();
@@ -262,6 +379,8 @@ onMounted(async () => {
     border-collapse: collapse;
 
     td {
+      max-width: 200px;
+      word-break: break-word;
       border: 1px solid rgb(148, 148, 148);
       padding: 2px 4px;
       text-align: center;
