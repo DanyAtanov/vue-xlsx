@@ -1,4 +1,5 @@
 <template>
+  
   <div ref="table" class="sheet-table">
     <table>
       <thead class="sheet-table__header">
@@ -38,6 +39,7 @@ import SortIcon from "@/components/SortIcon.vue";
 
 let table = ref();
 let json = ref([]);
+let tableList = ref([]);
 let commentsList = ref([]);
 let headers = ref([]);
 let abraforceValue = ref(null);
@@ -56,7 +58,40 @@ const sheetToJson = async () => {
     cellStyles: true,
   });
 
-  json.value = utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+  tableList.value = Object.entries(workbook.Sheets).map((e) => ({
+    [e[0]]: e[1],
+  }));
+  tableList.value = [...tableList.value];
+
+  console.log('tableList', tableList.value);
+
+  tableList.value.forEach((table, index) => {
+    json.value = utils.sheet_to_json(table[workbook.SheetNames[index]]);
+
+    console.log('json', json.value);
+
+    const ws = workbook.Sheets[workbook.SheetNames[0]];
+    if (!ws) return;
+    const ref = utils.decode_range(ws["!ref"]);
+    for (let R = 0; R <= ref.e.r; ++R)
+      for (let C = 0; C <= ref.e.c; ++C) {
+        const addr = utils.encode_cell({ r: R, c: C });
+        if (!ws[addr] || !ws[addr].c) continue;
+        var comments = ws[addr].c[0].h;
+        if (!comments.length) continue;
+
+        commentsList.value.push({ row: ws[addr].v, inProgress: comments });
+      }
+
+    // console.log(json.value);
+    // console.log(workbook);
+
+    collectTitles(json.value);
+
+    tableIsLoaded.value = true;
+  });
+
+  /*  json.value = utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
 
   const ws = workbook.Sheets[workbook.SheetNames[0]];
   if (!ws) return;
@@ -76,7 +111,7 @@ const sheetToJson = async () => {
 
   collectTitles(json.value);
 
-  tableIsLoaded.value = true;
+  tableIsLoaded.value = true; */
 };
 
 const sort = (arr, field) => {
@@ -185,6 +220,7 @@ const collectTitles = (arr) => {
   });
 
   headers.value = uniqueKeys;
+  console.log('headers', headers.value )
 };
 
 onMounted(async () => {
