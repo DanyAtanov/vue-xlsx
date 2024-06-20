@@ -239,27 +239,21 @@ const sheetToJson = async () => {
 
   json.value = utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
 
-  //console.log(json.value[0]);
-  // Костыль для покраски ячеек
-  var ws = workbook.Sheets[workbook.SheetNames[0]];
+  const ws = workbook.Sheets[workbook.SheetNames[0]];
   if (!ws) return;
-  var ref = utils.decode_range(ws["!ref"]);
-  for (var R = 0; R <= ref.e.r; ++R)
-    for (var C = 0; C <= ref.e.c; ++C) {
-      var addr = utils.encode_cell({ r: R, c: C });
+  const ref = utils.decode_range(ws["!ref"]);
+  for (let R = 0; R <= ref.e.r; ++R)
+    for (let C = 0; C <= ref.e.c; ++C) {
+      const addr = utils.encode_cell({ r: R, c: C });
       if (!ws[addr] || !ws[addr].c) continue;
       var comments = ws[addr].c[0].h;
       if (!comments.length) continue;
 
-      //console.log(comments.toLowerCase().includes("в разработке"));
-
-      console.log(ws[addr]);
-
       commentsList.value.push({ row: ws[addr].v, inProgress: comments });
     }
 
-  console.log(commentsList.value);
   console.log(json.value);
+  console.log(workbook)
 
   tableIsLoaded.value = true;
 };
