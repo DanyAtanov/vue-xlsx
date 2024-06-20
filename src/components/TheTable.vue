@@ -4,208 +4,26 @@
       <thead class="sheet-table__header">
         <tr>
           <th>1</th>
-          <th @click="sort(json, 'Бренд')">
-            <span>Бренд <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'Серия')">
-            <span>Серия <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'Осн.применение')">
-            <span>Осн.применение <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'Цвет')">
-            <span>Цвет <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'Основа')">
-            <span>Основа <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'Плотность')">
-            <span>Плотность <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'Особенности')">
-            <span>Особенности <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'Тип зерна')">
-            <span>Тип зерна <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'Зернистость')">
-            <span>Зернистость <SortIcon /></span>
-          </th>
-
-          <th @click="sort(json, 'Abraforce')" class="abraforce">
-            <span>Abraforce <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'P20')" class="abraforce">
-            <span>P20 <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'P24')" class="abraforce">
-            <span>P24 <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'P36')" class="abraforce">
-            <span>P36 <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'P40')" class="abraforce">
-            <span>P40 <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'P50')" class="abraforce">
-            <span>P50 <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'P60')" class="abraforce">
-            <span>P60 <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'P80')" class="abraforce">
-            <span>P80 <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'P100')" class="abraforce">
-            <span>P100 <SortIcon /></span>
-          </th>
-
-          <th @click="sort(json, 'P120')" class="abraforce">
-            <span>P120 <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'P150')" class="abraforce">
-            <span>P150 <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'P180')" class="abraforce">
-            <span>P180 <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'P220')" class="abraforce">
-            <span>P220 <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'P240')" class="abraforce">
-            <span>P240 <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'P280')" class="abraforce">
-            <span>P280 <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'P320')" class="abraforce">
-            <span>P320 <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'P360')" class="abraforce">
-            <span>P360 <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'P400')" class="abraforce">
-            <span>P400 <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'P500')" class="abraforce">
-            <span>P500 <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'P600')" class="abraforce">
-            <span>P600 <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'P800')" class="abraforce">
-            <span>P800 <SortIcon /></span>
-          </th>
-
-          <th @click="sort(json, 'P1000')" class="abraforce">
-            <span>P1000 <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'P1200')" class="abraforce">
-            <span>P1200 <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'P1500')" class="abraforce">
-            <span>P1500 <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'P2000')" class="abraforce">
-            <span>P2000 <SortIcon /></span>
-          </th>
-          <th @click="sort(json, 'P2500')" class="abraforce">
-            <span>P2500 <SortIcon /></span>
+          <th
+            v-for="(item, index) in headers"
+            :key="index"
+            @click="sort(json, item)"
+            :class="item.startsWith('P') ? 'abraforce' : ''"
+          >
+            <span>{{ item }} <SortIcon /></span>
           </th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(row, idx) in json" :key="idx">
           <td>{{ idx + 2 }}</td>
-          <td>{{ row["Бренд"] }}</td>
-          <td>{{ row["Серия"] }}</td>
-          <td>{{ row["Осн.применение"] }}</td>
-          <td>{{ row["Цвет"] }}</td>
-          <td>{{ row["Основа"] }}</td>
-          <td>{{ row["Плотность"] }}</td>
-          <td>{{ row["Особенности"] }}</td>
-          <td>{{ row["Тип зерна"] }}</td>
-          <td>{{ row["Зернистость"] }}</td>
-          <td ref="abraforceValue" :data-row="row['Abraforce']">
-            {{ row["Abraforce"] }}
-          </td>
-
-          <td ref="abraforceValue" :data-row="row['Abraforce']">
-            {{ row["P20"] }}
-          </td>
-          <td ref="abraforceValue" :data-row="row['Abraforce']">
-            {{ row["P24"] }}
-          </td>
-          <td ref="abraforceValue" :data-row="row['Abraforce']">
-            {{ row["P36"] }}
-          </td>
-          <td ref="abraforceValue" :data-row="row['Abraforce']">
-            {{ row["P40"] }}
-          </td>
-          <td ref="abraforceValue" :data-row="row['Abraforce']">
-            {{ row["P50"] }}
-          </td>
-          <td ref="abraforceValue" :data-row="row['Abraforce']">
-            {{ row["P60"] }}
-          </td>
-          <td ref="abraforceValue" :data-row="row['Abraforce']">
-            {{ row["P80"] }}
-          </td>
-          <td ref="abraforceValue" :data-row="row['Abraforce']">
-            {{ row["P100"] }}
-          </td>
-
-          <td ref="abraforceValue" :data-row="row['Abraforce']">
-            {{ row["P120"] }}
-          </td>
-          <td ref="abraforceValue" :data-row="row['Abraforce']">
-            {{ row["P150"] }}
-          </td>
-          <td ref="abraforceValue" :data-row="row['Abraforce']">
-            {{ row["P180"] }}
-          </td>
-          <td ref="abraforceValue" :data-row="row['Abraforce']">
-            {{ row["P220"] }}
-          </td>
-          <td ref="abraforceValue" :data-row="row['Abraforce']">
-            {{ row["P240"] }}
-          </td>
-          <td ref="abraforceValue" :data-row="row['Abraforce']">
-            {{ row["P280"] }}
-          </td>
-          <td ref="abraforceValue" :data-row="row['Abraforce']">
-            {{ row["P320"] }}
-          </td>
-          <td ref="abraforceValue" :data-row="row['Abraforce']">
-            {{ row["P360"] }}
-          </td>
-          <td ref="abraforceValue" :data-row="row['Abraforce']">
-            {{ row["P400"] }}
-          </td>
-          <td ref="abraforceValue" :data-row="row['Abraforce']">
-            {{ row["P500"] }}
-          </td>
-          <td ref="abraforceValue" :data-row="row['Abraforce']">
-            {{ row["P600"] }}
-          </td>
-          <td ref="abraforceValue" :data-row="row['Abraforce']">
-            {{ row["P800"] }}
-          </td>
-
-          <td ref="abraforceValue" :data-row="row['Abraforce']">
-            {{ row["P1000"] }}
-          </td>
-          <td ref="abraforceValue" :data-row="row['Abraforce']">
-            {{ row["P1200"] }}
-          </td>
-          <td ref="abraforceValue" :data-row="row['Abraforce']">
-            {{ row["P1500"] }}
-          </td>
-          <td ref="abraforceValue" :data-row="row['Abraforce']">
-            {{ row["P2000"] }}
-          </td>
-          <td ref="abraforceValue" :data-row="row['Abraforce']">
-            {{ row["P2500"] }}
+          <td
+            v-for="(item, index) in headers"
+            :key="index"
+            :ref="item.startsWith('P') ? 'abraforceValue' : ''"
+            :data-row="item.startsWith('P') ? row['Abraforce'] : ''"
+          >
+            {{ json[idx][item] ? json[idx][item] : "" }}
           </td>
         </tr>
       </tbody>
@@ -221,6 +39,7 @@ import SortIcon from "@/components/SortIcon.vue";
 let table = ref();
 let json = ref([]);
 let commentsList = ref([]);
+let headers = ref([]);
 let abraforceValue = ref(null);
 let tableIsLoaded = ref(false);
 
@@ -253,7 +72,9 @@ const sheetToJson = async () => {
     }
 
   console.log(json.value);
-  console.log(workbook)
+  console.log(workbook);
+
+  collectTitles(json.value);
 
   tableIsLoaded.value = true;
 };
@@ -340,7 +161,7 @@ const colorCells = () => {
   abraforceValue.value.forEach((cell, index) => {
     cell.style.backgroundColor = "white";
   });
-  
+
   abraforceValue.value.forEach((cell, index) => {
     if (cell.innerHTML.trim() !== "") {
       cell.style.backgroundColor = "#D6DEF2";
@@ -353,6 +174,17 @@ const colorCells = () => {
       }
     }
   });
+};
+
+const collectTitles = (arr) => {
+  let uniqueKeys = new Set();
+
+  arr.forEach((obj) => {
+    const keys = Object.keys(obj);
+    keys.forEach((key) => uniqueKeys.add(key));
+  });
+
+  headers.value = uniqueKeys;
 };
 
 onMounted(async () => {
