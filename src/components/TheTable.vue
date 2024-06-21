@@ -38,8 +38,21 @@
             <td
               v-for="(item, index) in headers[i]"
               :key="index"
-              :ref="item.startsWith('P') ? 'abraforceValue' : ''"
-              :data-row="item.startsWith('P') ? row['Abraforce'] : ''"
+              :ref="
+                i === 0
+                  ? item.startsWith('P')
+                    ? 'abraforceValue'
+                    : ''
+                  : 'abraforceValue'
+              "
+              :data-row="
+                i === 0
+                  ? item.startsWith('P')
+                    ? row['Abraforce']
+                    : ''
+                  : row['Серия']
+              "
+              :style="i === 0 && item.startsWith('P') && json[idx][item] ? 'background: #D6DEF2' : ''"
             >
               {{ json[idx][item] ? json[idx][item] : "" }}
             </td>
@@ -180,13 +193,13 @@ const clearSorting = () => {
 
 // Костыль для окрашивания ячеек
 const colorCells = () => {
-  abraforceValue.value.forEach((cell, index) => {
+/*   abraforceValue.value.forEach((cell, index) => {
     cell.style.backgroundColor = "white";
-  });
+  }); */
 
   abraforceValue.value.forEach((cell, index) => {
     if (cell.innerHTML.trim() !== "") {
-      cell.style.backgroundColor = "#D6DEF2";
+      //cell.style.backgroundColor = "#D6DEF2";
 
       for (let i = 0; i < commentsList.value.length; i++) {
         if (cell.dataset.row === commentsList.value[i].row) {
@@ -221,9 +234,6 @@ const getTableName = (arr) => {
 };
 
 const tabClick = (index) => {
-  console.log(index);
-  console.log(table.value[index]);
-
   table.value.forEach((item, index) => {
     item.classList.remove("--is-active");
     tab.value[index].classList.remove("--is-active");
