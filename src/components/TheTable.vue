@@ -1,34 +1,52 @@
 <template>
-  
-  <div ref="table" class="sheet-table">
-    <table>
-      <thead class="sheet-table__header">
-        <tr>
-          <th>1</th>
-          <th
-            v-for="(item, index) in headers"
-            :key="index"
-            @click="sort(json, item)"
-            :class="item.startsWith('P') ? 'abraforce' : ''"
-          >
-            <span>{{ item }} <SortIcon /></span>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(row, idx) in json" :key="idx">
-          <td>{{ idx + 2 }}</td>
-          <td
-            v-for="(item, index) in headers"
-            :key="index"
-            :ref="item.startsWith('P') ? 'abraforceValue' : ''"
-            :data-row="item.startsWith('P') ? row['Abraforce'] : ''"
-          >
-            {{ json[idx][item] ? json[idx][item] : "" }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="sheet-table">
+    <div class="sheet-table__tabs">
+      <div
+        @click="tabClick(index)"
+        v-for="(tab, index) in tableNames"
+        :key="index"
+        ref="tab"
+        class="sheet-table__tab-title"
+      >
+        {{ tab }}
+      </div>
+    </div>
+    <div
+      v-for="(json, i) in jsonList"
+      :key="i"
+      ref="table"
+      class="sheet-table__table"
+    >
+      <h2>{{ tableNames[i] }}</h2>
+      <table>
+        <thead class="sheet-table__table-header">
+          <tr>
+            <th>1</th>
+            <th
+              v-for="(item, index) in headers[i]"
+              :key="index"
+              @click="sort(json, item)"
+              :class="item.startsWith('P') ? 'abraforce' : ''"
+            >
+              <span>{{ item }} <SortIcon /></span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(row, idx) in json" :key="idx">
+            <td>{{ idx + 2 }}</td>
+            <td
+              v-for="(item, index) in headers[i]"
+              :key="index"
+              :ref="item.startsWith('P') ? 'abraforceValue' : ''"
+              :data-row="item.startsWith('P') ? row['Abraforce'] : ''"
+            >
+              {{ json[idx][item] ? json[idx][item] : "" }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
@@ -38,16 +56,14 @@ import { read, utils } from "xlsx";
 import SortIcon from "@/components/SortIcon.vue";
 
 let table = ref();
-let json = ref([]);
+let jsonList = ref([]);
 let tableList = ref([]);
+let tableNames = ref([]);
 let commentsList = ref([]);
 let headers = ref([]);
+let tab = ref([]);
 let abraforceValue = ref(null);
 let tableIsLoaded = ref(false);
-
-watch(abraforceValue, () => {
-  colorCells();
-});
 
 const sheetToJson = async () => {
   const f = await fetch("/src/assets/table.xlsx");
@@ -63,35 +79,11 @@ const sheetToJson = async () => {
   }));
   tableList.value = [...tableList.value];
 
-  console.log('tableList', tableList.value);
-
   tableList.value.forEach((table, index) => {
-    json.value = utils.sheet_to_json(table[workbook.SheetNames[index]]);
+    jsonList.value.push(utils.sheet_to_json(table[workbook.SheetNames[index]]));
 
-    console.log('json', json.value);
-
-    const ws = workbook.Sheets[workbook.SheetNames[0]];
-    if (!ws) return;
-    const ref = utils.decode_range(ws["!ref"]);
-    for (let R = 0; R <= ref.e.r; ++R)
-      for (let C = 0; C <= ref.e.c; ++C) {
-        const addr = utils.encode_cell({ r: R, c: C });
-        if (!ws[addr] || !ws[addr].c) continue;
-        var comments = ws[addr].c[0].h;
-        if (!comments.length) continue;
-
-        commentsList.value.push({ row: ws[addr].v, inProgress: comments });
-      }
-
-    // console.log(json.value);
-    // console.log(workbook);
-
-    collectTitles(json.value);
-
-    tableIsLoaded.value = true;
+    collectTitles(jsonList.value[index]);
   });
-
-  /*  json.value = utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
 
   const ws = workbook.Sheets[workbook.SheetNames[0]];
   if (!ws) return;
@@ -106,12 +98,7 @@ const sheetToJson = async () => {
       commentsList.value.push({ row: ws[addr].v, inProgress: comments });
     }
 
-  console.log(json.value);
-  console.log(workbook);
-
-  collectTitles(json.value);
-
-  tableIsLoaded.value = true; */
+  getTableName(tableList.value);
 };
 
 const sort = (arr, field) => {
@@ -176,20 +163,20 @@ const sortDown = (arr, field) => {
 };
 
 const clearSorting = () => {
-  document.querySelectorAll(".sheet-table__header th").forEach((item) => {
+  document.querySelectorAll(".sheet-table__table-header th").forEach((item) => {
     item.classList.remove("--sort-up");
     item.classList.remove("--sort-down");
   });
 };
 
-const prohibitToCopy = () => {
+/* const prohibitToCopy = () => {
   table.value.ondragstart = prohibit;
   table.value.onselectstart = prohibit;
   table.value.oncontextmenu = prohibit;
   function prohibit() {
     return false;
   }
-};
+}; */
 
 // Костыль для окрашивания ячеек
 const colorCells = () => {
@@ -219,13 +206,42 @@ const collectTitles = (arr) => {
     keys.forEach((key) => uniqueKeys.add(key));
   });
 
-  headers.value = uniqueKeys;
-  console.log('headers', headers.value )
+  headers.value.push(uniqueKeys);
+};
+
+const getTableName = (arr) => {
+  let titles = new Set();
+
+  arr.forEach((obj) => {
+    const keys = Object.keys(obj);
+    keys.forEach((key) => titles.add(key));
+  });
+
+  tableNames.value = [...titles];
+};
+
+const tabClick = (index) => {
+  console.log(index);
+  console.log(table.value[index]);
+
+  table.value.forEach((item, index) => {
+    item.classList.remove("--is-active");
+    tab.value[index].classList.remove("--is-active");
+  });
+
+  table.value[index].classList.add("--is-active");
+  tab.value[index].classList.add("--is-active");
 };
 
 onMounted(async () => {
   sheetToJson();
-  prohibitToCopy();
+  //prohibitToCopy();
+
+  console.log(commentsList.value);
+});
+
+watch(abraforceValue, () => {
+  colorCells();
 });
 </script>
 
@@ -250,7 +266,36 @@ onMounted(async () => {
     }
   }
 
-  &__header {
+  &__tabs {
+    display: flex;
+  }
+
+  &__tab-title {
+    cursor: pointer;
+    font-weight: bold;
+
+    & + & {
+      margin-left: 20px;
+    }
+
+    &.--is-active {
+      color: #e54934;
+    }
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__table {
+    display: none;
+
+    &.--is-active {
+      display: block;
+    }
+  }
+
+  &__table-header {
     font-weight: bold;
     position: sticky;
     top: 0;
